@@ -3,8 +3,10 @@
 angular.module('issueTracker', [
     'ngRoute',
     'issueTracker.home.dashboard',
-    'issueTracker.home.anonymous',
-    'issueTracker.users.identity',
+    'issueTracker.home.public',
+    'issueTracker.users.identityService',
+    'issueTracker.users.me.changePassword',
+    'issueTracker.users.me.userService',
     'issueTracker.common',
     'angular-loading-bar',
     'ngAnimate',

@@ -19,7 +19,7 @@
             <input type="password" ng-model="userRegister.Password" id="password2" required ng-minlength="6" class="form-control">
             <label for="confirm-password">Confirm Password</label>
             <input type="password" id="confirm-password" ng-model="userRegister.ConfirmPassword" required ng-minlength="6" class="form-control">
-            <input type="submit" value="Register" class="btn btn-primary" ng-disabled="registerForm.$invalid || userRegister.password != userRegister.confirmPassword" ng-click="register(userRegister)">
+            <input type="submit" value="Register" class="btn btn-primary" ng-disabled="registerForm.$invalid" ng-click="register(userRegister)">
         </form>
     </div>
 </div>

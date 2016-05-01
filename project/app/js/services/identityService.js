@@ -1,5 +1,5 @@
-angular.module('issueTracker.users.identity', ['ngCookies'])
-    .factory('identity', [
+angular.module('issueTracker.users.identityService', ['ngCookies'])
+    .factory('identityService', [
         '$cookies',
         '$http',
         '$q',
@@ -11,6 +11,10 @@ angular.module('issueTracker.users.identity', ['ngCookies'])
                     userId: $cookies.get('userId'),
                     accessToken: $cookies.get('access_token')
                 }
+            }
+            
+            function getUserAuth() {
+                return $cookies.get('access_token');
             }
             
             function isAuthenticated() {
@@ -47,6 +51,7 @@ angular.module('issueTracker.users.identity', ['ngCookies'])
             
             return {
                 getCurrentUser: getCurrentUser,
+                getUserAuth: getUserAuth,
                 isAuthenticated: isAuthenticated
             };
         }

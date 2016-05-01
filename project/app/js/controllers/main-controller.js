@@ -2,14 +2,20 @@ angular.module('issueTracker.common', [])
     .controller('MainCtrl', [
         '$rootScope',
         '$location',
-        'identity',
-        'authentication',
-        function($rootScope, $location, identity, authentication) {
+        'identityService',
+        'authService',
+        'notify',
+        function($rootScope, $location, identityService, authService, notify) {
             $rootScope.logout = function() {
-                authentication.logoutUser();
+                authService.logoutUser();
+                notify({
+                        message: 'Logout successful!',
+                        duration: 3000,
+                        classes: ['alert-success']
+                    });
                 $location.path('/');
             }
-            identity.isAuthenticated()
+            identityService.isAuthenticated()
                 .then(function() {
                     $rootScope.isAuthenticated = true;
                 }, function() {

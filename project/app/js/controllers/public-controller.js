@@ -1,37 +1,37 @@
 'use strict';
 
-angular.module('issueTracker.home.anonymous', [
-    'issueTracker.users.authentication'
+angular.module('issueTracker.home.public', [
+    'issueTracker.users.authService'
 ])
 
 .config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/', {
-        templateUrl: 'app/home/anonymous/anonymous.html',
-        controller: 'AnonymousCtrl'
+        templateUrl: 'app/templates/public.html',
+        controller: 'PublicCtrl'
     });
 }])
 
-.controller('AnonymousCtrl', [
+.controller('PublicCtrl', [
     '$scope', 
     '$location',
-    'authentication',
-    'identity',
+    'authService',
+    'identityService',
     'notify',
-    function($scope, $location, authentication, identity, notify) {
+    function($scope, $location, authService, identityService, notify) {
         $scope.login = function(user) {
-            authentication.loginUser(user)
+            authService.loginUser(user)
                 .then(function(success) {
                     notify({
                         message: 'Successful!',
-                        duration: 2000,
+                        duration: 3000,
                         classes: ['alert-success']
                     });
-                    identity.isAuthenticated();
+                    identityService.isAuthenticated();
                     $location.path('/dashboard');
                 }, function(error) {
                     notify({
                         message: error,
-                        duration: 6000,
+                        duration: 8000,
                         classes: ['cg-notify-error']
                     });
                 });
@@ -39,7 +39,7 @@ angular.module('issueTracker.home.anonymous', [
         
         
         $scope.register = function(user) {
-            authentication.registerUser(user)
+            authService.registerUser(user)
                 .then(function(success) {
                     $scope.login({
                         email: user.Email,
@@ -49,7 +49,7 @@ angular.module('issueTracker.home.anonymous', [
                     for(var errorMsg in error) {
                         notify({
                             message: error[errorMsg][error[errorMsg].length - 1],
-                            duration: 6000,
+                            duration: 8000,
                             classes: ['cg-notify-error']
                         });
                         break;

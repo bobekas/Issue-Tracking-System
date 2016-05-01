@@ -1,5 +1,5 @@
-angular.module('issueTracker.users.authentication', ['ngCookies'])
-    .factory('authentication', [
+angular.module('issueTracker.users.authService', ['ngCookies'])
+    .factory('authService', [
         '$http',
         '$q',
         '$cookies',
