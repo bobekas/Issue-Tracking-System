@@ -14,6 +14,7 @@ angular.module('issueTracker.common', [])
                     $rootScope.isAuthenticated = true;
                 }, function() {
                     $rootScope.isAuthenticated = false;
+                    $location.path('/');
                 });
         }    
     ]);

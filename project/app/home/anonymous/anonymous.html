@@ -1,10 +1,5 @@
 <h2 class="center">Please login or register!</h2>
 <div class="row">
-    <div class="col-md-12">
-        <span class="form-msg">{{message}}</span>
-    </div>
-</div>
-<div class="row">
     <div class="col-md-6">
         <h3 class="center">Login</h3>
         <form name="loginForm">
@@ -19,12 +14,12 @@
         <h3 class="center">Register</h3>
         <form name="registerForm">
             <label for="email2">Email</label>
-            <input type="text" ng-model="register.email" id="email2" required ng-minlength="3" class="form-control">
+            <input type="text" ng-model="userRegister.Email" id="email2" required ng-minlength="3" class="form-control">
             <label for="password2">Password</label>
-            <input type="password" ng-model="register.password" id="password2" required ng-minlength="6" class="form-control">
+            <input type="password" ng-model="userRegister.Password" id="password2" required ng-minlength="6" class="form-control">
             <label for="confirm-password">Confirm Password</label>
-            <input type="password" id="confirm-password" ng-model="confirmPassword" required ng-minlength="6" class="form-control">
-            <input type="submit" value="Register" class="btn btn-primary" ng-disabled="registerForm.$invalid || register.password != confirmPassword" ng-click="register()">
+            <input type="password" id="confirm-password" ng-model="userRegister.ConfirmPassword" required ng-minlength="6" class="form-control">
+            <input type="submit" value="Register" class="btn btn-primary" ng-disabled="registerForm.$invalid || userRegister.password != userRegister.confirmPassword" ng-click="register(userRegister)">
         </form>
     </div>
 </div>

@@ -11,12 +11,9 @@ angular.module('issueTracker.users.authentication', ['ngCookies'])
                 
                 $http.post(BASE_URL + 'api/Account/Register', user)
                     .then(function(response) {
-                        $cookies.put('access_token', response.data.access_token);
-                        $cookies.put('userName', response.data.userName);
-                        $rootScope.isAuthenticated = true;
-                        deferred.resolve(response.data);
+                        deferred.resolve(response.user);
                     }, function (error) {
-
+                        deferred.reject(error.data['ModelState']);
                     });
                 
                 return deferred.promise;
@@ -24,7 +21,7 @@ angular.module('issueTracker.users.authentication', ['ngCookies'])
             
             function loginUser(user) {
                 var deferred = $q.defer();
-                
+                user = 'grant_type=password&username=' + user.email + '&password=' + user.password;
                 $http.post(BASE_URL + 'api/Token', user)
                     .then(function(response) {
                         $cookies.put('access_token', response.data.access_token);
@@ -40,6 +37,8 @@ angular.module('issueTracker.users.authentication', ['ngCookies'])
             
             function logoutUser() {
                 $cookies.remove('access_token');
+                $cookies.remove('userName');
+                $cookies.remove('userId');
                 $rootScope.isAuthenticated = false;
             }
             

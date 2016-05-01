@@ -7,7 +7,8 @@ angular.module('issueTracker', [
     'issueTracker.users.identity',
     'issueTracker.common',
     'angular-loading-bar',
-    'ngAnimate'
+    'ngAnimate',
+    'cgNotify'
 ])
 .config(['$routeProvider', function($routeProvider) {
     $routeProvider.otherwise({redirectTo: '/'});
