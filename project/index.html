@@ -33,12 +33,26 @@
       <div class="navbar-header"> 
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9" aria-expanded="false"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> 
         <span class="navbar-brand header">Issue Tracker</span> 
-      </div>  
+      </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9"> 
         <ul class="nav navbar-nav" ng-if="isAuthenticated"> 
-          <li><a href="#/dashboard">Dashboard</a></li> 
-          <li><a href="#/projects">Projects</a></li>
-          <li><a href="" ng-click="logout()">Logout</a></li>
+          <li ng-class="{ active: isActive('/dashboard')}"><a href="#/dashboard">Dashboard</a></li> 
+          <li ng-class="{ active: isActive('/projects')}">
+            <a href="#/projects" ng-show="!isAdmin">Projects</a>
+            <a href="" ng-show="isAdmin" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects <span class="caret"></span></a>
+            <ul class="dropdown-menu" ng-show="isAdmin">
+              <li><a href="#/projects/add">Add</a></li>
+              <li><a href="#/projects">Show all</a></li>
+            </ul>
+          </li>
+          <li ng-class="{ active: isActive('/profile')}" class="dropdown">
+            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Profile <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#/profile/password">Change Password</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="" ng-click="logout()">Logout</a></li>
+            </ul>
+          </li>
         </ul> 
       </div> 
     </div> 
@@ -56,7 +70,8 @@
   
   <script src="app/js/services/authService.js"></script>
   <script src="app/js/services/identityService.js"></script>
-  <script src="app/js/services/userService.js"></script>
+  <script src="app/js/services/usersService.js"></script>
+  <script src="app/js/services/projectsService.js"></script>
   
   <script src="app/js/controllers/main-controller.js"></script>
   <script src="app/js/controllers/change-password-controller.js"></script>

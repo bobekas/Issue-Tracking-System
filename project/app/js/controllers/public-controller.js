@@ -37,7 +37,6 @@ angular.module('issueTracker.home.public', [
                 });
         }
         
-        
         $scope.register = function(user) {
             authService.registerUser(user)
                 .then(function(success) {

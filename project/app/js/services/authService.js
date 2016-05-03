@@ -4,8 +4,9 @@ angular.module('issueTracker.users.authService', ['ngCookies'])
         '$q',
         '$cookies',
         '$rootScope',
+        'identityService',
         'BASE_URL',
-        function ($http, $q, $cookies, $rootScope, BASE_URL) {
+        function ($http, $q, $cookies, $rootScope, identityService, BASE_URL) {
             function registerUser(user) {
                 var deferred = $q.defer();
                 
@@ -27,6 +28,12 @@ angular.module('issueTracker.users.authService', ['ngCookies'])
                         $cookies.put('access_token', response.data.access_token);
                         $cookies.put('userName', response.data.userName);
                         $rootScope.isAuthenticated = true;
+                        identityService.isAdmin()
+                            .then(function(success) {
+                                if(success['isAdmin']) {
+                                    $rootScope.isAdmin = true;
+                                }
+                            });
                         deferred.resolve(response.data);
                     }, function(error) {
                         deferred.reject(error.data['error_description']);
@@ -40,6 +47,7 @@ angular.module('issueTracker.users.authService', ['ngCookies'])
                 $cookies.remove('userName');
                 $cookies.remove('userId');
                 $rootScope.isAuthenticated = false;
+                $rootScope.isAdmin = false;
             }
             
             return {

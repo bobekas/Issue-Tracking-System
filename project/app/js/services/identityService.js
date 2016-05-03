@@ -17,6 +17,14 @@ angular.module('issueTracker.users.identityService', ['ngCookies'])
                 return $cookies.get('access_token');
             }
             
+            function getAuthHeaderConfig() {
+                return {
+                    headers: {
+                        'Authorization': 'Bearer ' + getUserAuth()
+                    }
+                }
+            }
+            
             function isAuthenticated() {
                 var deferred = $q.defer();
                 
@@ -26,11 +34,8 @@ angular.module('issueTracker.users.identityService', ['ngCookies'])
                     deferred.reject(false);
                 }
                 
-                var config = {
-                    headers: {
-                        'Authorization': 'Bearer ' + user.accessToken
-                    }
-                }
+                var config = getAuthHeaderConfig();
+                
                 $http.get(BASE_URL + 'users/me', config)
                     .then(function (response) {
                         if(!$cookies.get('userId')) {
@@ -49,10 +54,37 @@ angular.module('issueTracker.users.identityService', ['ngCookies'])
                 return deferred.promise;
             }
             
+            function isAdmin() {
+                var deferred = $q.defer();
+                
+                var user = getCurrentUser();
+                
+                if(!user.accessToken) {
+                    deferred.reject(false);
+                }
+                
+                var config = getAuthHeaderConfig();
+                
+                $http.get(BASE_URL + 'users/me', config)
+                    .then(function (response) {
+                        if(response.data['isAdmin']) {
+                            deferred.resolve(true);
+                        } else {
+                            deferred.reject(false);
+                        }
+                    }, function(error) {
+                        deferred.reject(error);
+                    });
+                
+                return deferred.promise;
+            }
+            
             return {
                 getCurrentUser: getCurrentUser,
                 getUserAuth: getUserAuth,
-                isAuthenticated: isAuthenticated
+                getAuthHeaderConfig: getAuthHeaderConfig,
+                isAuthenticated: isAuthenticated,
+                isAdmin: isAdmin
             };
         }
     ]);

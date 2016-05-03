@@ -9,11 +9,12 @@ angular.module('issueTracker.users.me.changePassword', [])
 
 .controller('ChangePasswordCtrl', [
     '$scope',
-    'userService',
+    'usersService',
     'notify',
-    function($scope, userService, notify) {
+    function($scope, usersService, notify) {
         $scope.changePassword = function(user) {
-            userService.changePassword(user)
+            usersService.getAllUsers();
+            usersService.changePassword(user)
                 .then(function(success) {
                     notify({
                         message: 'Your password has been changed.',

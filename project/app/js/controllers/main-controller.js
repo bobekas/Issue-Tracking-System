@@ -1,11 +1,13 @@
 angular.module('issueTracker.common', [])
     .controller('MainCtrl', [
         '$rootScope',
+        '$scope',
         '$location',
+        '$filter',
         'identityService',
         'authService',
         'notify',
-        function($rootScope, $location, identityService, authService, notify) {
+        function($rootScope, $scope, $location, $filter, identityService, authService, notify) {
             $rootScope.logout = function() {
                 authService.logoutUser();
                 notify({
@@ -15,9 +17,16 @@ angular.module('issueTracker.common', [])
                     });
                 $location.path('/');
             }
+            $scope.isActive = function(viewLocation) {
+                var path = $location.path();
+                return $filter('limitTo')(path, viewLocation.length) === viewLocation;
+            }
             identityService.isAuthenticated()
-                .then(function() {
+                .then(function(response) {
                     $rootScope.isAuthenticated = true;
+                    if(response['isAdmin']) {
+                        $rootScope.isAdmin = true;
+                    }
                 }, function() {
                     $rootScope.isAuthenticated = false;
                     $location.path('/');
