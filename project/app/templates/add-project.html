@@ -1,0 +1,28 @@
+<div class="row">
+    <h2 class="center">
+        New Project
+    </h2>
+    <div class="col-md-6 col-md-offset-3">
+        <form name="addNewProject">
+            <label for="project-name">Name</label>
+            <input type="text" ng-model="project.Name" id="project-name" required class="form-control">
+            <label for="project-description">Description</label>
+            <input type="text" ng-model="project.Description" id="project-description" required class="form-control">
+            <label for="confirm-password">Leader</label>
+            <select class="form-control" ng-model="project.LeadId" required>
+                <option value="">---Please select---</option>
+                <option ng-repeat="user in users | orderBy:'Username'" value="{{user.Id}}">{{user.Username}}</option>
+            </select>
+            <br>
+            <label for="project-key">ProjectKey</label>
+            <input type="text" id="project-key" ng-model="project.ProjectKey" required class="form-control">
+            <label for="project-priorities">Priorities</label>
+            <input type="text" id="project-priorities" ng-model="project.priorities" required class="form-control">
+            <label for="project-priorities">Labels</label>
+            <input type="text" id="project-labels" ng-change="getSuggestLabels(project.labels)" ng-model="project.labels" required class="form-control">
+            <span ng-repeat="label in labels | limitTo: 5">{{label.Name}} </span>
+            <br>
+            <input type="submit" value="Create Project" class="btn btn-primary" ng-disabled="addNewProject.$invalid" ng-click="addProject(project)">
+        </form>
+    </div>
+</div>

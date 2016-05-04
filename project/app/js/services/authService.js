@@ -30,7 +30,8 @@ angular.module('issueTracker.users.authService', ['ngCookies'])
                         $rootScope.isAuthenticated = true;
                         identityService.isAdmin()
                             .then(function(success) {
-                                if(success['isAdmin']) {
+                                console.log(success);
+                                if(success) {
                                     $rootScope.isAdmin = true;
                                 }
                             });

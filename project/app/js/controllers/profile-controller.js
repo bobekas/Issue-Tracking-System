@@ -1,4 +1,6 @@
-angular.module('issueTracker.users.me.changePassword', [])
+angular.module('issueTracker.users.me.profile', [
+    'issueTracker.users.me.usersService'
+])
 
 .config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/profile/password', {

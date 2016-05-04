@@ -17,6 +17,10 @@ angular.module('issueTracker.users.identityService', ['ngCookies'])
                 return $cookies.get('access_token');
             }
             
+            function getUserId() {
+                return $cookis.get('userId');
+            }
+            
             function getAuthHeaderConfig() {
                 return {
                     headers: {
@@ -82,6 +86,7 @@ angular.module('issueTracker.users.identityService', ['ngCookies'])
             return {
                 getCurrentUser: getCurrentUser,
                 getUserAuth: getUserAuth,
+                getUserId: getUserId,
                 getAuthHeaderConfig: getAuthHeaderConfig,
                 isAuthenticated: isAuthenticated,
                 isAdmin: isAdmin

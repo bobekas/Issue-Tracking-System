@@ -1,6 +1,8 @@
 'use strict';
 
-angular.module('issueTracker.home.dashboard', [])
+angular.module('issueTracker.home.dashboard', [
+    'issueTracker.issuesService'
+])
 
 .config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/dashboard', {
@@ -11,7 +13,11 @@ angular.module('issueTracker.home.dashboard', [])
 
 .controller('DashboardCtrl', [
     '$scope',
-    function($scope) {
-        
+    'issuesService',
+    function($scope, issuesService) {
+        issuesService.getMyIssues(1, 1)
+            .then(function(success) {
+                console.log(success);
+            })
     }
 ]);
