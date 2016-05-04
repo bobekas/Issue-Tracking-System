@@ -38,7 +38,6 @@
         <ul class="nav navbar-nav" ng-if="isAuthenticated"> 
           <li ng-class="{ active: isActive('/dashboard')}"><a href="#/dashboard">Dashboard</a></li> 
           <li ng-class="{ active: isActive('/projects')}">
-            <a href="#/projects" ng-show="!isAdmin">Projects</a>
             <a href="" ng-show="isAdmin" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects <span class="caret"></span></a>
             <ul class="dropdown-menu" ng-show="isAdmin">
               <li><a href="#/projects/add">Add</a></li>

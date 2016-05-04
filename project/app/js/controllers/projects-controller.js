@@ -38,7 +38,7 @@ angular.module('issueTracker.projects', [
                     '$route',
                     'issuesService',
                     function($route, issuesService) {
-                        return issuesService.getProjectIssues($route.current.params.projectId);
+                        return issuesService.getProjectIssues($route.current.params.projectId, 5, 1);
                     }
                 ]
             }
@@ -91,10 +91,12 @@ angular.module('issueTracker.projects', [
 .controller('CurrentProjectCtrl', [
     '$scope', 
     '$location',
+    '$route',
     'notify',
     'getCurrentProject',
     'getProjectIssues',
-    function($scope, $location, notify, getCurrentProject, getProjectIssues) {
+    'issuesService',
+    function($scope, $location, $route, notify, getCurrentProject, getProjectIssues, issuesService) {
         if(getCurrentProject['statusText'] === 'Bad Request') {
             notify({
                 message: getCurrentProject.data.Message,
@@ -104,5 +106,12 @@ angular.module('issueTracker.projects', [
             $location.path('/dashboard');
         }
         $scope.project = getCurrentProject;
-        $scope.issues = getProjectIssues;
+        $scope.issues = getProjectIssues.Issues;
+        $scope.issuePages = getProjectIssues.TotalPages;
+        $scope.changeIssuePage = function(page) {
+            issuesService.getProjectIssues($route.current.params.projectId, 5, page)
+                .then(function(data) {
+                        $scope.issues = data.Issues;
+                    });
+        }
     }]);

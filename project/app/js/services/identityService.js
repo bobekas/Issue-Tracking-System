@@ -4,7 +4,8 @@ angular.module('issueTracker.users.identityService', ['ngCookies'])
         '$http',
         '$q',
         'BASE_URL',
-        function($cookies, $http, $q, BASE_URL) {            
+        '$rootScope',
+        function($cookies, $http, $q, BASE_URL, $rootScope) {            
             function getCurrentUser() {
                 return {
                     username: $cookies.get('userName'),
@@ -43,6 +44,7 @@ angular.module('issueTracker.users.identityService', ['ngCookies'])
                 $http.get(BASE_URL + 'users/me', config)
                     .then(function (response) {
                         if(!$cookies.get('userId')) {
+                            $rootScope.userId = response.data.Id;
                             $cookies.put('userId', response.data.Id);
                         }
                         deferred.resolve(response.data);

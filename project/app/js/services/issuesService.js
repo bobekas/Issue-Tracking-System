@@ -5,12 +5,12 @@ angular.module('issueTracker.issuesService', [])
         'BASE_URL',
         'identityService',
         function ($http, $q, BASE_URL, identityService) {
-            function getProjectIssues(id) {
+            function getProjectIssues(id, pageSize, pageNumber) {
                 var deferred = $q.defer();
                 
                 var config = identityService.getAuthHeaderConfig();
                 
-                $http.get(BASE_URL + 'projects/' + id + '/issues', config)
+                $http.get(BASE_URL + 'issues/?pageSize=' + pageSize + '&pageNumber=' + pageNumber + '&filter=ProjectId == ' + id, config)
                     .then(function(issues) {
                         deferred.resolve(issues.data);
                     }, function(error) {

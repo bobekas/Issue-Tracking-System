@@ -36,27 +36,22 @@ angular.module('issueTracker.projectsService', [])
             }
             
             function getMyProjects(pageSize, pageNumber) {
-                var userId = identityService.getUserId();
-
                 var deferred = $q.defer();
-
-                var request = {
-                    method: 'GET',
-                    url: BASE_URL + 'projects?pageSize=' + pageSize + '&pageNumber=' + pageNumber + '&filter="' + userId + '" == Lead.Id',
-                    headers: { 
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': 'Bearer ' + identityService.getUserAuth()
-                    }
-                };
+                identityService.isAuthenticated()
+                    .then(function() {
+                        var userId = identityService.getUserId();
+                        
+                        var config = identityService.getAuthHeaderConfig();
                 
-                $http(request)
-                    .then(function(success) {
-                        deferred.resolve(success.data)
-                    }, function(error) {
-                        reject(error);
+                        $http.get(BASE_URL + 'projects?pageSize=' + pageSize + '&pageNumber=' + pageNumber + '&filter="' + userId + '" == Lead.Id', config)
+                            .then(function(success) {
+                                deferred.resolve(success.data)
+                            }, function(error) {
+                                reject(error);
+                            });
+                        
                     });
-                
-                return deferred.promise;
+                    return deferred.promise;
             }
             
             function addProject(project) {    
