@@ -35,26 +35,14 @@ angular.module('issueTracker.projectsService', [])
                 return deferred.promise;
             }
             
-            function getMyProjects() {
+            function getMyProjects(pageSize, pageNumber) {
                 var userId = identityService.getUserId();
-                
-                getAllProjects()
-                    .then(function(success) {
-                        console.log(success);
-                    }, function(error) {
-                        
-                    });
-            }
-            
-            function addProject(project) {    
-                var projectData = parseToUrlEncoded(project);
 
                 var deferred = $q.defer();
 
                 var request = {
-                    method: 'POST',
-                    url: BASE_URL + 'projects',
-                    data: projectParseData,
+                    method: 'GET',
+                    url: BASE_URL + 'projects?pageSize=' + pageSize + '&pageNumber=' + pageNumber + '&filter="' + userId + '" == Lead.Id',
                     headers: { 
                         'Content-Type': 'application/x-www-form-urlencoded',
                         'Authorization': 'Bearer ' + identityService.getUserAuth()
@@ -63,9 +51,34 @@ angular.module('issueTracker.projectsService', [])
                 
                 $http(request)
                     .then(function(success) {
-                        console.log(success);
+                        deferred.resolve(success.data)
                     }, function(error) {
-                        console.log(error);
+                        reject(error);
+                    });
+                
+                return deferred.promise;
+            }
+            
+            function addProject(project) {    
+                var projectData = parseProjectToUrlEncoded(project);
+
+                var deferred = $q.defer();
+
+                var request = {
+                    method: 'POST',
+                    url: BASE_URL + 'projects',
+                    data: projectData,
+                    headers: { 
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': 'Bearer ' + identityService.getUserAuth()
+                    }
+                };
+                
+                $http(request)
+                    .then(function(success) {
+                        deferred.resolve(success.data)
+                    }, function(error) {
+                        reject(error);
                     });
                 
                 return deferred.promise;
@@ -86,7 +99,7 @@ angular.module('issueTracker.projectsService', [])
                 return deferred.promise;
             }
             
-            function parseToUrlEncoded(project) {
+            function parseProjectToUrlEncoded(project) {
                 
                 var projectParseData = 'Name=' + project.Name + '&Description=' + project.Description + '&LeadId=' + project.LeadId + '&ProjectKey=' + project.ProjectKey; 
                 
@@ -109,6 +122,7 @@ angular.module('issueTracker.projectsService', [])
             return {
                 getProject: getProject,
                 getAllProjects: getAllProjects,
+                getMyProjects: getMyProjects,
                 addProject: addProject,
                 getSuggestLabels: getSuggestLabels
             }

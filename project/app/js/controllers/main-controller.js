@@ -12,7 +12,7 @@ angular.module('issueTracker.common', [])
                 authService.logoutUser();
                 notify({
                         message: 'Logout successful!',
-                        duration: 3000,
+                        duration: 4000,
                         classes: ['alert-success']
                     });
                 $location.path('/');

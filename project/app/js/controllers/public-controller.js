@@ -23,7 +23,7 @@ angular.module('issueTracker.home.public', [
                 .then(function(success) {
                     notify({
                         message: 'Successful!',
-                        duration: 3000,
+                        duration: 4000,
                         classes: ['alert-success']
                     });
                     identityService.isAuthenticated();

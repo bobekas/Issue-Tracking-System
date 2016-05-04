@@ -6,8 +6,35 @@
 <div class="row">
     <div class="col-md-6">
         <h3 class="center">Affiliated Projects</h3>
+        <h3 ng-repeat="project in projects"><a href="#/projects/{{project.Id}}">{{project.Name}}</a></h3>
+        <div class="text-center">
+            <button class="btn btn-primary" ng-repeat="n in [] | range: projectsPages" ng-click="changeProjectPage(n + 1)">{{n + 1}}</button>
+        </div>
     </div>
     <div class="col-md-6">
         <h3 class="center">Assigned Issues</h3>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Project</th>
+                        <th>Due Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="issue in issues">
+                        <td><a href="#/issues/{{issue.Id}}">{{issue.Title}}</a></td>
+                        <td>{{issue.Description}}</td>
+                        <td><a href="#/projects/{{issue.Project.Id}}">{{issue.Project.Name}}</a></td>
+                        <td>{{issue.DueDate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-center">
+                <button class="btn btn-primary" ng-repeat="n in [] | range: issuePages" ng-click="changeIssuePage(n + 1)">{{n + 1}}</button>
+            </div>
+        </div>
     </div>
 </div>

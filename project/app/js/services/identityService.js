@@ -18,7 +18,7 @@ angular.module('issueTracker.users.identityService', ['ngCookies'])
             }
             
             function getUserId() {
-                return $cookis.get('userId');
+                return $cookies.get('userId');
             }
             
             function getAuthHeaderConfig() {

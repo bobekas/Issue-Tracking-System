@@ -64,10 +64,19 @@ angular.module('issueTracker.projects', [
         
         $scope.addProject = function(project) {
             projectsService.addProject(project)
-                .then(function(success) {
-                    
+                .then(function(project) {
+                    notify({
+                        message: 'Successful!',
+                        duration: 4000,
+                        classes: ['alert-success']
+                    });
+                    $location.path('/projects/' + project.Id);
                 }, function(error) {
-                    
+                    notify({
+                            message: 'Bad request!',
+                            duration: 8000,
+                            classes: ['cg-notify-error']
+                        });
                 });
         }
     }])
