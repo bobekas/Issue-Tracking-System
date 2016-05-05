@@ -39,3 +39,10 @@ input.ng-invalid.ng-dirty {
 .center {
     text-align: center;
 }
+h4.blue {
+  margin: 0 !important;
+  background-color: #337ab7;
+  padding: 5px;
+  margin-bottom: 10px !important;
+  color: white;
+}

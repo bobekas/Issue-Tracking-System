@@ -37,7 +37,7 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9"> 
         <ul class="nav navbar-nav" ng-if="isAuthenticated"> 
           <li ng-class="{ active: isActive('/dashboard')}"><a href="#/dashboard">Dashboard</a></li> 
-          <li ng-class="{ active: isActive('/projects')}">
+          <li ng-class="{ active: isActive('/projects')}">  
             <a href="" ng-show="isAdmin" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects <span class="caret"></span></a>
             <ul class="dropdown-menu" ng-show="isAdmin">
               <li><a href="#/projects/add">Add</a></li>
@@ -78,6 +78,7 @@
   <script src="app/js/controllers/public-controller.js"></script>
   <script src="app/js/controllers/dashboard-controller.js"></script>
   <script src="app/js/controllers/projects-controller.js"></script>
+  <script src="app/js/controllers/issues-controller.js"></script>
 
 </body>
 </html>

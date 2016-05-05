@@ -29,10 +29,13 @@ angular.module('issueTracker.projects', [
             templateUrl: 'app/templates/project-page.html',
             controller: 'CurrentProjectCtrl',
             resolve: {
-                getCurrentProject: 
+                getCurrentProject: [
+                    '$route', 
+                    'projectsService',
                     function($route, projectsService) {
                         return projectsService.getProject($route.current.params.projectId);
-                    }
+                    }        
+                ]
                 ,
                 getProjectIssues: [
                     '$route',

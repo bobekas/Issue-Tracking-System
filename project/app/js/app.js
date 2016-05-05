@@ -7,6 +7,7 @@ angular.module('issueTracker', [
     'issueTracker.users.identityService',
     'issueTracker.users.me.profile',
     'issueTracker.projects',
+    'issueTracker.issues',
     'issueTracker.common',
     'angular-loading-bar',
     'ngAnimate',

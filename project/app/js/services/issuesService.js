@@ -34,9 +34,55 @@ angular.module('issueTracker.issuesService', [])
                 return deferred.promise;
             }
             
+            function getCurrentIssue(issueId) {
+                var deferred = $q.defer();
+                
+                var config = identityService.getAuthHeaderConfig();
+                $http.get(BASE_URL + 'issues/' + issueId, config)
+                    .then(function(issues) {
+                        deferred.resolve(issues.data);
+                    }, function(error) {
+                        deferred.resolve(error);
+                    });
+                
+                return deferred.promise;
+            }
+            
+            function getCurrentIssueComments(issueId) {
+                var deferred = $q.defer();
+                
+                var config = identityService.getAuthHeaderConfig();
+                $http.get(BASE_URL + 'issues/' + issueId + '/comments', config)
+                    .then(function(issues) {
+                        deferred.resolve(issues.data);
+                    }, function(error) {
+                        deferred.resolve(error);
+                    });
+                
+                return deferred.promise;
+            }
+            
+            function changeIssueStatus(issueId, statusId) {
+                var deferred = $q.defer();
+                
+                var config = identityService.getAuthHeaderConfig();
+                
+                $http.put(BASE_URL + 'issues/' + issueId + '/changestatus?statusid=' + statusId, null, config)
+                    .then(function(issues) {
+                        deferred.resolve(issues.data);
+                    }, function(error) {
+                        deferred.resolve(error);
+                    });
+                
+                return deferred.promise;
+            }
+            
             return {
                 getProjectIssues: getProjectIssues,
-                getMyIssues: getMyIssues
+                getMyIssues: getMyIssues,
+                getCurrentIssue: getCurrentIssue,
+                getCurrentIssueComments: getCurrentIssueComments,
+                changeIssueStatus: changeIssueStatus
             }
         }
     ]);
