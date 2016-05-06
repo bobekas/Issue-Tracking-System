@@ -84,7 +84,6 @@ angular.module('issueTracker.issuesService', [])
                 
                 var config = identityService.getAuthHeaderConfig();
                 config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                console.log(config);
                 $http.post(BASE_URL + 'issues', data, config)
                     .then(function(issues) {
                         deferred.resolve(issues.data);

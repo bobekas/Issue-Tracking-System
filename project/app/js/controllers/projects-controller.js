@@ -53,6 +53,26 @@ angular.module('issueTracker.projects', [
             templateUrl: 'app/templates/project-page.html',
             controller: 'CurrentProjectCtrl',
             resolve: {
+                isLeader: [
+                    '$q',
+                    'projectsService',
+                    '$route',
+                    'identityService',
+                    function($q, projectsService, $route, identityService) {
+                        var deferred = $q.defer();
+                        
+                        projectsService.getLeadId($route.current.params.projectId)
+                            .then(function(leadId) {
+                                if(leadId === identityService.getUserId()) {
+                                    deferred.resolve(true);
+                                } else {
+                                    deferred.resolve(false);
+                                }
+                            });
+                            
+                        return deferred.promise;
+                    }
+                ],
                 getCurrentProject: [
                     '$route', 
                     '$location',
@@ -85,15 +105,18 @@ angular.module('issueTracker.projects', [
     'getAllUsers',
     'projectsService',
     function($scope, $location, notify, getAllUsers, projectsService) {
-        
-        $scope.users = getAllUsers;
-        
-        $scope.getSuggestLabels = function(labelInput) {
-            projectsService.getSuggestLabels(labelInput)
-                .then(function(suggestLabels) {
-                    $scope.labels = suggestLabels;
-                })
-        }
+        var names = getAllUsers.map(function(user) {
+            return user['Username'];
+        });
+        jQuery(function() {
+            $( "#leader" ).autocomplete({
+            source: function(request, response) {
+                var results = $.ui.autocomplete.filter(names, request.term);
+                
+                response(results.slice(0, 5));
+            }
+            });
+        });
         
         $scope.addProject = function(project) {
             projectsService.addProject(project)
@@ -129,7 +152,9 @@ angular.module('issueTracker.projects', [
     'getCurrentProject',
     'getProjectIssues',
     'issuesService',
-    function($scope, $location, $route, notify, getCurrentProject, getProjectIssues, issuesService) {
+    'isLeader',
+    function($scope, $location, $route, notify, getCurrentProject, getProjectIssues, issuesService, isLeader) {
+        $scope.isLeader = isLeader;
         $scope.project = getCurrentProject;
         $scope.issues = getProjectIssues.Issues;
         $scope.issuePages = getProjectIssues.TotalPages;

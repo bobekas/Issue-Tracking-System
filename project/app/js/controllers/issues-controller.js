@@ -71,6 +71,52 @@ angular.module('issueTracker.issues', [
                 }]
             }
         })
+        
+        .when('/issues/:issueId/edit', {
+            templateUrl: 'app/templates/edit-issue.html',
+            controller: 'EditIssueCtrl',
+            resolve: {
+                getCurrentIssueData: [
+                    '$route',
+                    '$location',
+                    '$q',
+                    'projectsService',
+                    'issuesService',
+                    'identityService',
+                    function($route, $location, $q, projectsService, issuesService, identityService) {
+                        var deferred = $q.defer();
+                        var data = {};
+                        issuesService.getCurrentIssue($route.current.params.issueId)
+                            .then(function(issue) {
+                                data.issue = issue;
+                                projectsService.getProject(issue.Project.Id)
+                                            .then(function(project) {
+                                                data.project = project;
+                                                if(identityService.getUserId() === project.Lead.Id) {
+                                                    deferred.resolve(data);
+                                                } else {
+                                                    identityService.isAdmin()
+                                                        .then(function(success) {
+                                                            deferred.resolve(data);
+                                                        }, function(error) {
+                                                            $location.path('/dashboard');  
+                                                        });  
+                                                }
+                                            }, function(error) {
+                                                $location.path('/dashboard');
+                                            });
+                            }, function(error) {
+                                $location.path('/dashboard');
+                            });
+                        
+                        return deferred.promise;
+                    }
+                ],
+                getAllUsers: ['usersService', function(usersService) {
+                    return usersService.getAllUsers();
+                }]
+            }
+        });
 }])
 
 .controller('CurrentIssueCtrl', [
@@ -90,7 +136,7 @@ angular.module('issueTracker.issues', [
         }
         projectsService.getLeadId(getCurrentIssue.Project.Id)
             .then(function(leadId) {
-                if(leadId === identityService.getUserId) {
+                if(leadId === identityService.getUserId()) {
                     $scope.isLeader = true;
                 }
             });
@@ -134,7 +180,18 @@ angular.module('issueTracker.issues', [
         '$location',
         'issuesService',
         function($scope, getCurrentProject, getAllUsers, notify, $location, issuesService) {
-            $scope.users = getAllUsers;
+            var names = getAllUsers.map(function(user) {
+                return user['Username'];
+            });
+            jQuery(function() {
+                $( "#assignee" ).autocomplete({
+                source: function(request, response) {
+                    var results = $.ui.autocomplete.filter(names, request.term);
+                    
+                    response(results.slice(0, 5));
+                }
+                });
+            });
             $scope.issue = {
                 ProjectId: getCurrentProject.Id
             }
@@ -161,3 +218,31 @@ angular.module('issueTracker.issues', [
             }
         }
     ])
+    
+.controller('EditIssueCtrl', [
+    '$scope',
+    'getCurrentIssueData',
+    'getAllUsers',
+    'notify',
+    '$location',
+    function($scope, getCurrentIssueData, getAllUsers, notify, $location) {  
+        var names = getAllUsers.map(function(user) {
+                return user['Username'];
+            });
+        var usersId
+        jQuery(function() {
+            $( "#assignee" ).autocomplete({
+            source: function(request, response) {
+                var results = $.ui.autocomplete.filter(names, request.term);
+                
+                response(results.slice(0, 5));
+            }
+            });
+        });
+        $scope.issue = getCurrentIssueData.issue;
+        $scope.project = getCurrentIssueData.project;
+        $scope.edit = function(issue) {
+            console.log(issue);
+        }
+    }
+]);
