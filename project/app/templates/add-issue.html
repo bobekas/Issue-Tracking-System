@@ -1,0 +1,32 @@
+<div class="row">
+    <h2 class="center">
+        Add Issue
+    </h2>
+    <div class="col-md-6 col-md-offset-3">
+        <hr>
+        <form name="addNewIssue">
+            <label for="issue-title">Title</label>
+            <input type="text" ng-model="issue.Title" id="issue-title" required class="form-control">
+            <label for="issue-description">Description</label>
+            <input type="text" ng-model="issue.Description" id="issue-description" required class="form-control">
+            <label for="project">Project</label>
+            <input class="form-control" id="project" type="text" ng-model="project.Name" disabled>
+            <br>
+            <label for="assignee">AssigneeId</label>
+            <select class="form-control" ng-model="issue.AssigneeId" id="assignee" required>
+                <option value="">Search for user</option>
+                <option ng-repeat="user in users | orderBy:'Username'" value="{{user.Id}}">{{user.Username}}</option>
+            </select>
+            <br>
+            <label for="priority">PriorityId</label>
+            <select class="form-control" ng-model="issue.PriorityId" id="priority" required>
+                <option value="">---Please select---</option>
+                <option ng-repeat="priority in project.Priorities | orderBy:'Id'" value="{{priority.Id}}">{{priority.Name}}</option>
+            </select>
+            <br>
+            <label for="due-date">DueDate</label>
+            <input type="text" id="due-date" ng-model="issue.DueDate" placeholder="yyyy/mm/dd" required class="form-control">
+            <input type="submit" value="Add issue" class="btn btn-primary" ng-disabled="addNewissue.$invalid" ng-click="addIssue(issue)">
+        </form>
+    </div>
+</div>

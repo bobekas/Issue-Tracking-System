@@ -9,9 +9,9 @@
             <input type="text" ng-model="project.Name" id="project-name" required class="form-control">
             <label for="project-description">Description</label>
             <input type="text" ng-model="project.Description" id="project-description" required class="form-control">
-            <label for="confirm-password">Leader</label>
-            <select class="form-control" ng-model="project.LeadId" required>
-                <option value="">---Please select---</option>
+            <label for="leader">Leader</label>
+            <select class="form-control" ng-model="project.LeadId" id="leader" required>
+                <option value="">Search for user</option>
                 <option ng-repeat="user in users | orderBy:'Username'" value="{{user.Id}}">{{user.Username}}</option>
             </select>
             <br>

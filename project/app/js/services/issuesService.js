@@ -42,7 +42,7 @@ angular.module('issueTracker.issuesService', [])
                     .then(function(issues) {
                         deferred.resolve(issues.data);
                     }, function(error) {
-                        deferred.resolve(error);
+                        deferred.reject(error);
                     });
                 
                 return deferred.promise;
@@ -77,12 +77,47 @@ angular.module('issueTracker.issuesService', [])
                 return deferred.promise;
             }
             
+            function addIssue(data) {
+                var deferred = $q.defer();
+                
+                data = jQuery.param(data);
+                
+                var config = identityService.getAuthHeaderConfig();
+                config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                console.log(config);
+                $http.post(BASE_URL + 'issues', data, config)
+                    .then(function(issues) {
+                        deferred.resolve(issues.data);
+                    }, function(error) {
+                        deferred.reject(error);
+                    });
+                
+                return deferred.promise;
+            }
+            
+            function addCommentToIssue(issueId, data) {
+                var deferred = $q.defer();
+                
+                var config = identityService.getAuthHeaderConfig();
+
+                $http.post(BASE_URL + 'issues/' + issueId + '/comments', data, config)
+                    .then(function(comments) {
+                        deferred.resolve(comments.data);
+                    }, function(error) {
+                        deferred.reject(error);
+                    });
+                
+                return deferred.promise;
+            }
+            
             return {
                 getProjectIssues: getProjectIssues,
+                addIssue: addIssue,
                 getMyIssues: getMyIssues,
                 getCurrentIssue: getCurrentIssue,
                 getCurrentIssueComments: getCurrentIssueComments,
-                changeIssueStatus: changeIssueStatus
+                changeIssueStatus: changeIssueStatus,
+                addCommentToIssue: addCommentToIssue
             }
         }
     ]);

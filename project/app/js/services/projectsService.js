@@ -14,11 +14,24 @@ angular.module('issueTracker.projectsService', [])
                     .then(function(project) {
                         deferred.resolve(project.data);
                     }, function(error) {
-                        deferred.resolve(error);
+                        deferred.reject(error);
                     });
                 
                 return deferred.promise;
             }    
+            
+            function getLeadId(id) {
+                var deferred = $q.defer();
+                
+                getProject(id)
+                    .then(function(project) {
+                        deferred.resolve(project.Lead.Id);
+                    }, function(error) {
+                        deferred.reject(error);
+                    });
+                    
+                return deferred.promise;
+            }
             
             function getAllProjects() {
                 var deferred = $q.defer();
@@ -116,6 +129,7 @@ angular.module('issueTracker.projectsService', [])
             
             return {
                 getProject: getProject,
+                getLeadId: getLeadId,
                 getAllProjects: getAllProjects,
                 getMyProjects: getMyProjects,
                 addProject: addProject,

@@ -11,6 +11,18 @@ angular.module('issueTracker.projects', [
             templateUrl: 'app/templates/add-project.html',
             controller: 'AddProjectCtrl',
             resolve: {
+                isAdmin: [
+                    '$location',
+                    'identityService',
+                    function($location, identityService) {
+                        identityService.isAdmin()
+                            .then(function(data) {
+                                return data;
+                            }, function name(params) {
+                                $location.path('/dashboard');
+                            })
+                    }
+                ],
                 getAllUsers: ['usersService', function(usersService) {
                     return usersService.getAllUsers();
                 }]
@@ -20,6 +32,18 @@ angular.module('issueTracker.projects', [
             templateUrl: 'app/templates/projects.html',
             controller: 'GetAllProjectsCtrl',
             resolve: {
+                isAdmin: [
+                    '$location',
+                    'identityService',
+                    function($location, identityService) {
+                        identityService.isAdmin()
+                            .then(function(data) {
+                                return data;
+                            }, function name(params) {
+                                $location.path('/dashboard');
+                            })
+                    }
+                ],
                 getAllProjects: ['projectsService', function(projectsService) {
                     return projectsService.getAllProjects();
                 }]
@@ -31,8 +55,14 @@ angular.module('issueTracker.projects', [
             resolve: {
                 getCurrentProject: [
                     '$route', 
+                    '$location',
                     'projectsService',
-                    function($route, projectsService) {
+                    function($route, $location, projectsService) {
+                        projectsService.getProject($route.current.params.projectId)
+                            .then(function(data) {
+                            }, function(error) {
+                                $location.path('/dashboard');
+                            }); 
                         return projectsService.getProject($route.current.params.projectId);
                     }        
                 ]
@@ -100,14 +130,6 @@ angular.module('issueTracker.projects', [
     'getProjectIssues',
     'issuesService',
     function($scope, $location, $route, notify, getCurrentProject, getProjectIssues, issuesService) {
-        if(getCurrentProject['statusText'] === 'Bad Request') {
-            notify({
-                message: getCurrentProject.data.Message,
-                duration: 6000,
-                classes: ['cg-notify-error']
-            });
-            $location.path('/dashboard');
-        }
         $scope.project = getCurrentProject;
         $scope.issues = getProjectIssues.Issues;
         $scope.issuePages = getProjectIssues.TotalPages;

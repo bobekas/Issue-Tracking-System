@@ -2,7 +2,7 @@
     <div class="col-md-6">
         <h3>
             {{issue.IssueKey}} 
-            <a ng-show="isAdmin || false" href="#/issues/{{issue.Id}}/edit" class="btn btn-primary" role="button">Edit</a>
+            <a ng-show="isAdmin || isLeader" href="#/issues/{{issue.Id}}/edit" class="btn btn-primary" role="button">Edit</a>
         </h3>
         <hr>
         <h4><strong>Title:</strong> {{issue.Title}}</h4> 
@@ -14,9 +14,11 @@
         <h4><strong>Project:</strong> {{issue.Project.Name}}</h4>
         <h4><strong>Status:</strong> {{issue.Status.Name}}</h4>
     </div>
-    <div class="col-md-6">
-        <h3>Available statuses</h3>
-        <h4 ng-repeat="status in issue.AvailableStatuses">{{status.Name}} <button class="btn btn-primary" ng-click="changeIssueStatus(status.Id)">CHANGE</button></h4>
+    <div class="col-md-6" ng-show="issue.AvailableStatuses.length">
+        <div ng-show="isAdmin || isAssignee">
+            <h3>Available statuses</h3>
+            <h4 ng-repeat="status in issue.AvailableStatuses">{{status.Name}} <button class="btn btn-primary" ng-click="changeIssueStatus(status.Id)">CHANGE</button></h4>    
+        </div>
     </div>
 </div>
 <div class="row">
@@ -26,6 +28,13 @@
             <h4 class="blue">{{comment.Author.Username}} - {{comment.CreatedOn}}</h4>
             <span>{{comment.Text}}</span>
             <hr>
+        </div>
+        <div class="form-group" ng-show="isAdmin || isLeader || isAssignee">
+            <form name="addComment">
+                <label for="comment">Text:</label>
+                <textarea class="form-control" required ng-model="comment.Text" rows="5" id="comment"></textarea>
+                <input type="submit" value="Add comment" class="btn btn-primary" ng-disabled="addComment.$invalid" ng-click="addCommentToIssue(comment)">
+            </form>
         </div>
     </div>
 </div>
