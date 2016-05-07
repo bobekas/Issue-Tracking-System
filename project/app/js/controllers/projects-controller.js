@@ -39,7 +39,7 @@ angular.module('issueTracker.projects', [
                         identityService.isAdmin()
                             .then(function(data) {
                                 return data;
-                            }, function name(params) {
+                            }, function() {
                                 $location.path('/dashboard');
                             })
                     }
@@ -74,19 +74,22 @@ angular.module('issueTracker.projects', [
                     }
                 ],
                 getCurrentProject: [
+                    '$q',
                     '$route', 
                     '$location',
                     'projectsService',
-                    function($route, $location, projectsService) {
+                    function($q, $route, $location, projectsService) {
+                        var deferred = $q.defer();
+                        
                         projectsService.getProject($route.current.params.projectId)
                             .then(function(data) {
+                                deferred.resolve(data);
                             }, function(error) {
                                 $location.path('/dashboard');
                             }); 
-                        return projectsService.getProject($route.current.params.projectId);
+                        return deferred.promise;
                     }        
-                ]
-                ,
+                ],
                 getProjectIssues: [
                     '$route',
                     'issuesService',
@@ -94,6 +97,59 @@ angular.module('issueTracker.projects', [
                         return issuesService.getProjectIssues($route.current.params.projectId, 5, 1);
                     }
                 ]
+            }
+        })
+        
+        .when('/projects/:projectId/edit', {
+            templateUrl: 'app/templates/edit-project.html',
+            controller: 'EditProjectCtrl',
+            resolve: {
+                isAdmin: [
+                    '$q',
+                    'identityService',
+                    'projectsService',
+                    '$route',
+                    '$location',
+                    function($q, identityService, projectsService, $route, $location) {
+                        var deferred = $q.defer();
+
+                        identityService.isAdmin()
+                            .then(function(success) {
+                                deferred.resolve(true);
+                            }, function(error) {
+                                projectsService.getLeadId($route.current.params.projectId)
+                                    .then(function(leadId) {
+                                        if(leadId === identityService.getUserId()) {
+                                            deferred.resolve(false);
+                                        } else {
+                                            $location.path('/dashboard');
+                                        }
+                                    });
+                            });
+                            
+                        return deferred.promise;
+                    }
+                ],
+                getCurrentProject: [
+                    '$q',
+                    '$route', 
+                    '$location',
+                    'projectsService',
+                    function($q, $route, $location, projectsService) {
+                        var deferred = $q.defer();
+                        
+                        projectsService.getProject($route.current.params.projectId)
+                            .then(function(data) {
+                                deferred.resolve(data);
+                            }, function(error) {
+                                $location.path('/dashboard');
+                            }); 
+                        return deferred.promise;
+                    }        
+                ],
+                getAllUsers: ['usersService', function(usersService) {
+                    return usersService.getAllUsers();
+                }]
             }
         })
 }])
@@ -104,7 +160,8 @@ angular.module('issueTracker.projects', [
     'notify',
     'getAllUsers',
     'projectsService',
-    function($scope, $location, notify, getAllUsers, projectsService) {
+    'usersService',
+    function($scope, $location, notify, getAllUsers, projectsService, usersService) {
         var names = getAllUsers.map(function(user) {
             return user['Username'];
         });
@@ -119,20 +176,24 @@ angular.module('issueTracker.projects', [
         });
         
         $scope.addProject = function(project) {
-            projectsService.addProject(project)
-                .then(function(project) {
-                    notify({
-                        message: 'Successful!',
-                        duration: 4000,
-                        classes: ['alert-success']
-                    });
-                    $location.path('/projects/' + project.Id);
-                }, function(error) {
-                    notify({
-                            message: 'Bad request!',
-                            duration: 8000,
-                            classes: ['cg-notify-error']
-                        });
+            usersService.getUserId(jQuery("#leader").val())
+                .then(function(userId) {
+                    $scope.project.LeadId = userId;
+                    projectsService.addProject(project)
+                        .then(function(project) {
+                            notify({
+                                message: 'Successful!',
+                                duration: 4000,
+                                classes: ['alert-success']
+                            });
+                            $location.path('/projects/' + project.Id);
+                        }, function(error) {
+                            notify({
+                                    message: 'Bad request!',
+                                    duration: 8000,
+                                    classes: ['cg-notify-error']
+                                });
+                        });    
                 });
         }
     }])
@@ -164,4 +225,57 @@ angular.module('issueTracker.projects', [
                         $scope.issues = data.Issues;
                     });
         }
-    }]);
+    }])
+    
+.controller('EditProjectCtrl', [
+    '$scope',
+    'notify',
+    'projectsService',
+    'isAdmin',
+    'getCurrentProject',
+    'getAllUsers',
+    'usersService',
+    function($scope, notify, projectsService, isAdmin, getCurrentProject, getAllUsers, usersService) {
+        var names = getAllUsers.map(function(user) {
+            return user['Username'];
+        });
+        jQuery(function() {
+            $( "#leader2" ).autocomplete({
+            source: function(request, response) {
+                var results = $.ui.autocomplete.filter(names, request.term);
+                
+                response(results.slice(0, 5));
+            }
+            });
+        });
+        
+        $scope.isAdmin = isAdmin;
+        $scope.project = getCurrentProject;
+        $scope.project.Priorities = $scope.project.Priorities.map(function(priority) {
+            return priority['Name'];    
+        });
+        $scope.project.Labels = $scope.project.Labels.map(function(label) {
+            return label['Name'];    
+        });
+        $scope.updateProject = function(data) {
+            usersService.getUserId(jQuery("#leader2").val())
+                .then(function(userId) {
+                    $scope.project.LeadId = userId;
+                    projectsService.editProject(data)
+                        .then(function(project) {
+                            notify({
+                                message: 'Successful!',
+                                duration: 4000,
+                                classes: ['alert-success']
+                            });
+                        }, function(error) {
+                            notify({
+                                    message: 'Bad request!',
+                                    duration: 8000,
+                                    classes: ['cg-notify-error']
+                                });
+                        });    
+                });
+        }
+    }
+])

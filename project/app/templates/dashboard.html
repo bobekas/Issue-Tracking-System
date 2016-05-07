@@ -10,6 +10,7 @@
         <h4 ng-hide="projects.length">no projects</h4>
         <h3 ng-repeat="project in projects"><a href="#/projects/{{project.Id}}">{{project.Name}}</a></h3>
         <div class="text-center">
+            <hr>
             <button class="btn btn-primary" ng-repeat="n in [] | range: projectsPages" ng-click="changeProjectPage(n + 1)">{{n + 1}}</button>
         </div>
     </div>
@@ -36,6 +37,7 @@
                 </tbody>
             </table>
             <div class="text-center">
+                <hr>
                 <button class="btn btn-primary" ng-repeat="n in [] | range: issuePages" ng-click="changeIssuePage(n + 1)">{{n + 1}}</button>
             </div>
         </div>

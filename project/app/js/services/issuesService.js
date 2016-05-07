@@ -94,6 +94,21 @@ angular.module('issueTracker.issuesService', [])
                 return deferred.promise;
             }
             
+            function editIssue(data, issueId) {
+                var deferred = $q.defer();
+                
+                var config = identityService.getAuthHeaderConfig();
+                config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                $http.put(BASE_URL + 'issues/' + issueId, data, config)
+                    .then(function(issues) {
+                        deferred.resolve(issues.data);
+                    }, function(error) {
+                        deferred.reject(error);
+                    });
+                
+                return deferred.promise;
+            }
+            
             function addCommentToIssue(issueId, data) {
                 var deferred = $q.defer();
                 
@@ -112,6 +127,7 @@ angular.module('issueTracker.issuesService', [])
             return {
                 getProjectIssues: getProjectIssues,
                 addIssue: addIssue,
+                editIssue: editIssue,
                 getMyIssues: getMyIssues,
                 getCurrentIssue: getCurrentIssue,
                 getCurrentIssueComments: getCurrentIssueComments,

@@ -60,7 +60,7 @@ angular.module('issueTracker.projectsService', [])
                             .then(function(success) {
                                 deferred.resolve(success.data)
                             }, function(error) {
-                                reject(error);
+                                deferred.reject(error);
                             });
                         
                     });
@@ -86,7 +86,27 @@ angular.module('issueTracker.projectsService', [])
                     .then(function(success) {
                         deferred.resolve(success.data)
                     }, function(error) {
-                        reject(error);
+                        deferred.reject(error);
+                    });
+                
+                return deferred.promise;
+            }
+            
+            function editProject(data) {
+                var deferred = $q.defer();
+                var projectId = data.Id;
+                data = 
+                    'Name=' + data.Name + 
+                    '&Description=' + data.Description + 
+                    '&LeadId=' + data.LeadId;
+        
+                var config = identityService.getAuthHeaderConfig();
+                config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                $http.put(BASE_URL + 'projects/' + projectId, data, config)
+                    .then(function(issues) {
+                        deferred.resolve(issues.data);
+                    }, function(error) {
+                        deferred.reject(error);
                     });
                 
                 return deferred.promise;
@@ -111,17 +131,17 @@ angular.module('issueTracker.projectsService', [])
                 
                 var projectParseData = 'Name=' + project.Name + '&Description=' + project.Description + '&LeadId=' + project.LeadId + '&ProjectKey=' + project.ProjectKey; 
                 
-                project.labels = project.labels.split(', ');
-                project.priorities = project.priorities.split(', ');
+                project.Labels = project.Labels.split(', ');
+                project.Priorities = project.Priorities.split(', ');
                 
                 var parseLabels = '';
-                for(var key in project.labels) {
-                    parseLabels += 'labels[' + key + '].Name=' + project.labels[key] + '&';
+                for(var key in project.Labels) {
+                    parseLabels += 'labels[' + key + '].Name=' + project.Labels[key] + '&';
                 }
                 
                 var parsePriorities = '';
-                for(var key in project.priorities) {
-                    parsePriorities += 'priorities[' + key + '].Name=' + project.priorities[key] + '&';
+                for(var key in project.Priorities) {
+                    parsePriorities += 'priorities[' + key + '].Name=' + project.Priorities[key] + '&';
                 }
                 
                 return parseLabels + parsePriorities + projectParseData;
@@ -133,6 +153,7 @@ angular.module('issueTracker.projectsService', [])
                 getAllProjects: getAllProjects,
                 getMyProjects: getMyProjects,
                 addProject: addProject,
+                editProject: editProject,
                 getSuggestLabels: getSuggestLabels
             }
         }

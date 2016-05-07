@@ -18,7 +18,7 @@ angular.module('issueTracker.users.me.usersService', [])
                     });
                 
                 return deferred.promise;
-            }  
+            }
             
             function getAllUsers() {
                 var deferred = $q.defer();
@@ -35,9 +35,25 @@ angular.module('issueTracker.users.me.usersService', [])
                 return deferred.promise;
             }  
             
+            function getUserId(username) {
+                var deferred = $q.defer();
+                
+                var config = identityService.getAuthHeaderConfig();
+                
+                $http.get(BASE_URL + 'users?filter=Username == "' + username + '"', config)
+                    .then(function(user) {
+                        deferred.resolve(user.data[0].Id);
+                    }, function(error) {
+                        deferred.reject(error);
+                    });
+                    
+                return deferred.promise;
+            }
+            
             return {
                 changePassword: changePassword,
-                getAllUsers: getAllUsers
+                getAllUsers: getAllUsers,
+                getUserId: getUserId
             }
         }
     ]);

@@ -179,7 +179,8 @@ angular.module('issueTracker.issues', [
         'notify',
         '$location',
         'issuesService',
-        function($scope, getCurrentProject, getAllUsers, notify, $location, issuesService) {
+        'usersService',
+        function($scope, getCurrentProject, getAllUsers, notify, $location, issuesService, usersService) {
             var names = getAllUsers.map(function(user) {
                 return user['Username'];
             });
@@ -200,21 +201,25 @@ angular.module('issueTracker.issues', [
                 Priorities: getCurrentProject.Priorities
             }
             $scope.addIssue = function(issue) {
-                issuesService.addIssue(issue)
-                    .then(function(issue) {
-                        notify({
-                        message: 'Issue has been added.',
-                        duration: 4000,
-                        classes: ['alert-success']
-                    });
-                    $location.path('/issues/' + issue.Id);
-                    }, function(error) {
-                        notify({
-                            message: error.data.Message,
-                            duration: 6000,
-                            classes: ['cg-notify-error']
+                usersService.getUserId(jQuery("#assignee").val())
+                .then(function(userId) {
+                    $scope.issue.AssigneeId = userId;
+                    issuesService.addIssue(issue)
+                        .then(function(issue) {
+                            notify({
+                            message: 'Issue has been added.',
+                            duration: 4000,
+                            classes: ['alert-success']
                         });
-                    });
+                        $location.path('/issues/' + issue.Id);
+                        }, function(error) {
+                            notify({
+                                message: error.data.Message,
+                                duration: 6000,
+                                classes: ['cg-notify-error']
+                            });
+                        });
+                });
             }
         }
     ])
@@ -225,7 +230,9 @@ angular.module('issueTracker.issues', [
     'getAllUsers',
     'notify',
     '$location',
-    function($scope, getCurrentIssueData, getAllUsers, notify, $location) {  
+    'issuesService',
+    'usersService',
+    function($scope, getCurrentIssueData, getAllUsers, notify, $location, issuesService, usersService) {  
         var names = getAllUsers.map(function(user) {
                 return user['Username'];
             });
@@ -242,7 +249,31 @@ angular.module('issueTracker.issues', [
         $scope.issue = getCurrentIssueData.issue;
         $scope.project = getCurrentIssueData.project;
         $scope.edit = function(issue) {
-            console.log(issue);
+            usersService.getUserId(jQuery("#assignee").val())
+                .then(function(userId) {
+                    $scope.issue.Assignee.Id = userId;
+                    var data = 
+                        'Title=' + issue.Title + 
+                        '&Description=' + issue.Description + 
+                        '&DueDate=' + issue.DueDate +
+                        '&AssigneeId=' + issue.Assignee.Id +
+                        '&PriorityId=' + issue.Priority.Id;
+                    issuesService.editIssue(data, issue.Id)
+                        .then(function(success) {
+                            notify({
+                                message: 'Issue has been edited.',
+                                duration: 4000,
+                                classes: ['alert-success']
+                            });
+                            $location.path('/issues/' + issue.Id);
+                        }, function(error) {
+                            notify({
+                                    message: error.data.Message,
+                                    duration: 6000,
+                                    classes: ['cg-notify-error']
+                                });
+                        });
+                });
         }
     }
 ]);

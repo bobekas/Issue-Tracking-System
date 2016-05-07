@@ -1,25 +1,23 @@
 <div class="row">
     <h2 class="center">
-        New Project
+        Edit Project
     </h2>
     <div class="col-md-6 col-md-offset-3">
         <hr>
-        <form name="addNewProject">
+        <form name="editProject">
             <label for="project-name">Name</label>
             <input type="text" ng-model="project.Name" id="project-name" required class="form-control">
             <label for="project-description">Description</label>
             <input type="text" ng-model="project.Description" id="project-description" required class="form-control">
             <div class="ui-widget">
-                <label for="leader">Leader</label>
-                <input type="text" ng-model="project.LeadUsername" id="leader" required class="form-control">
+                <label for="leader2">Leader</label>
+                <input type="text" ng-model="project.Lead.Username" ng-disabled="!isAdmin" id="leader2" required class="form-control">
             </div>
-            <label for="project-key">ProjectKey</label>
-            <input type="text" id="project-key" ng-model="project.ProjectKey" required class="form-control">
             <label for="project-priorities">Priorities</label>
             <input type="text" id="project-priorities" ng-model="project.Priorities" required class="form-control">
             <label for="project-priorities">Labels</label>
             <input type="text" id="project-labels" ng-model="project.Labels" required class="form-control">
-            <input type="submit" value="Create Project" class="btn btn-primary" ng-disabled="addNewProject.$invalid" ng-click="addProject(project)">
+            <input type="submit" value="Edit Project" class="btn btn-primary" ng-disabled="editProject.$invalid" ng-click="updateProject(project)">
         </form>
     </div>
 </div>
